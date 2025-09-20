@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ASCII Character Adder</title>
+  <!-- Google Fonts for demo purposes -->
+  https://fonts.googleapis.com/css?family=Roboto|Courier+Prime|Lobster|Montserrat|Oswald|Inconsolata&display=swap
+  <style>
+    #asciiDiv {
+      min-height: 40px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 2em;
+      transition: font-family 0.3s;
+    }
+    label, select, button {
+      font-size: 1em;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <label for="fontSelect">Choose font:</label>
+  <select id="fontSelect">
+    <option value="Arial, sans-serif">Arial</option>
+    <option value="'Courier New', Courier, monospace">Courier New</option>
+    <option value="'Times New Roman', Times, serif">Times New Roman</option>
+    <option value="'Roboto', sans-serif">Roboto</option>
+    <option value="'Courier Prime', monospace">Courier Prime</option>
+    <option value="'Lobster', cursive">Lobster</option>
+    <option value="'Montserrat', sans-serif">Montserrat</option>
+    <option value="'Oswald', sans-serif">Oswald</option>
+    <option value="'Inconsolata', monospace">Inconsolata</option>
+  </select>
+  <div id="asciiDiv"></div>
+  <button id="addCharBtn">Add ASCII Character</button>
+
+  <script>
+    const asciiDiv = document.getElementById('asciiDiv');
+    const addCharBtn = document.getElementById('addCharBtn');
+    const fontSelect = document.getElementById('fontSelect');
+    let asciiCode = 32; // Start from space character
+
+    addCharBtn.addEventListener('click', () => {
+      if (asciiCode <= 126) { // Printable ASCII range
+        asciiDiv.textContent += String.fromCharCode(asciiCode);
+        asciiCode++;
+      } else {
+        alert('All printable ASCII characters have been added!');
+      }
+    });
+
+    fontSelect.addEventListener('change', () => {
+      asciiDiv.style.fontFamily = fontSelect.value;
+    });
+
+    // Set initial font
+    asciiDiv.style.fontFamily = fontSelect.value;
+  </script>
+</body>
+</html>
