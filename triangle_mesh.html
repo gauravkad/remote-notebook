@@ -1,0 +1,142 @@
+<html>
+
+<head>
+  <style>
+    body {
+      background: #fff;
+      display: flex;
+      height: 100vh;
+      margin: 0;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 560px;
+      --blur: 2px;
+    }
+
+    .border {
+      box-sizing: border-box;
+      position: relative;
+      background: black;
+      /* background-image: -webkit-gradient(linear, right top, left bottom, from(#111), to(#000)); */
+      padding: 2px;
+      /* box-shadow: -1px 1px var(--blur) 1px rgba(0, 0, 0, 0.1), -2px 2px var(--blur) 1px rgba(0, 0, 0, 0.09), -3px 3px var(--bKTatlur) 1px rgba(0, 0, 0, 0.08), -4px 4px var(--blur) 1px rgba(0, 0, 0, 0.07), -5px 5px var(--blur) 1px rgba(0, 0, 0, 0.06), -6px 6px var(--blur) 1px rgba(0, 0, 0, 0.05), -7px 7px var(--blur) 1px rgba(0, 0, 0, 0.04), -8px 8px var(--blur) 1px rgba(0, 0, 0, 0.03), -9px 9px var(--blur) 1px rgba(0, 0, 0, 0.03), -10px 10px var(--blur) 1px rgba(0, 0, 0, 0.03), -11px 11px var(--blur) 1px rgba(0, 0, 0, 0.03), -12px 12px var(--blur) 1px rgba(0, 0, 0, 0.02), -13px 13px var(--blur) 1px rgba(0, 0, 0, 0.02), -14px 14px var(--blur) 1px rgba(0, 0, 0, 0.01), -15px 15px var(--blur) 1px rgba(0, 0, 0, 0.01), -16px 16px var(--blur) 1px rgba(0, 0, 0, 0.01); */
+    }
+
+    .frame {
+      left: 3%;
+      top: 2.5%;
+      box-shadow: inset -1px 1px 6px 1px rgba(0, 0, 0, 0.24);
+      background: white;
+      align-items: center;
+      display: flex;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    canvas {
+      box-shadow: inset 0 0 1px 0 rgba(0, 0, 0, 0.2);
+      height: 800px;
+      width: 800px;
+      background-size: cover;
+      background-position: center center;
+    }
+
+    .callback {
+      position: absolute;
+      font-family: monospace;
+      bottom: 10px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="border">
+    <div class="frame">
+      <canvas></canvas>
+    </div>
+  </div>
+
+  <div class="callback">
+    Like this? Check out the tutorial on <a href="https://generativeartistry.com" target="_blank"
+      rel="noopener noreferrer">
+      Generative Artistry
+  </div>
+
+</body>
+
+<script>
+
+  var canvas = document.querySelector('canvas');
+  var context = canvas.getContext('2d');
+
+  var size = window.innerWidth;
+  var dpr = window.devicePixelRatio;
+  canvas.width = size * dpr;
+  canvas.height = size * dpr;
+  context.scale(dpr, dpr);
+  context.lineJoin = 'bevel';
+
+  var line, dot,
+    odd = false,
+    lines = [],
+    gap = size / 15;
+
+  for (var y = gap / 2; y <= size; y += gap) {
+    odd = !odd;
+    line = [];
+    for (var x = gap / 4; x <= size; x += gap) {
+      dot = { x: x + (odd ? gap / 2 : 0), y: y };
+      line.push({
+        x: x + (Math.random() * .8 - .4) * gap + (odd ? gap / 2 : 0),
+        y: y + (Math.random() * .8 - .4) * gap
+      });
+      context.fill();
+    }
+    lines.push(line);
+  }
+
+  function drawTriangle(pointA, pointB, pointC) {
+    context.beginPath();
+    context.moveTo(pointA.x, pointA.y);
+    context.lineTo(pointB.x, pointB.y);
+    context.lineTo(pointC.x, pointC.y);
+    context.lineTo(pointA.x, pointA.y);
+    // context.closePath();
+    context.stroke();
+
+    pointA.x = Math.floor(pointA.x);
+    pointA.y = Math.floor(pointA.y);
+    pointB.x = Math.floor(pointB.x);
+    pointB.y = Math.floor(pointB.y);
+    pointC.x = Math.floor(pointC.x);
+    pointC.y = Math.floor(pointC.y);
+
+    // export to svg
+    console.log("<polygon points='",pointA.x ,",", pointA.y ," ", pointB.x ,",", pointB.y ," ", pointC.x ,",", pointC.y, "' fill='#aaa' stroke='red' stroke-width=1 />")
+    // <polygon points="20,124 102,64 117,172" fill="#aaa" stroke="red" stroke-width="1" />
+
+  }
+
+  var dotLine;
+  odd = true;
+
+  for (var y = 0; y < lines.length - 1; y++) {
+    odd = !odd;
+    dotLine = [];
+    for (var i = 0; i < lines[y].length; i++) {
+      dotLine.push(odd ? lines[y][i] : lines[y + 1][i]);
+      dotLine.push(odd ? lines[y + 1][i] : lines[y][i]);
+    }
+    for (var i = 0; i < dotLine.length - 2; i++) {
+      // console.log('point : ' + Math.floor(dotLine[i].x) + ',' + Math.floor(dotLine[i].y))
+      drawTriangle(dotLine[i], dotLine[i + 1], dotLine[i + 2]);
+    }
+  }
+
+
+</script>
+
+</html>
