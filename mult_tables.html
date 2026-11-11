@@ -26,20 +26,11 @@
       border: 1px solid #aebdb4;
     }
 
-    #numbers {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
-      gap: 12px;
-    }
-
-    label {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      min-height: 32px;
-      padding: 4px 8px;
+    select {
+      min-width: 120px;
+      padding: 8px;
       border: 1px solid #aebdb4;
-      cursor: pointer;
+      font: inherit;
     }
 
     input { accent-color: #216548; }
@@ -69,10 +60,10 @@
 </head>
 <body>
   <main>
-    <h1>Multiplication Table</h1>
+    <h3>Multiplication Table</h3>
     <fieldset>
       <legend>Choose a number</legend>
-      <div id="numbers"></div>
+      <select id="number-select" aria-label="Choose a number"></select>
     </fieldset>
     <button id="check" type="button">Check</button>
     <div id="results" role="log" aria-label="Multiplication results" aria-live="polite"></div>
@@ -81,30 +72,33 @@
   <script>
     let num = 1;
     let multiplier = 1;
-    const numbers = document.getElementById('numbers');
+    const numberSelect = document.getElementById('number-select');
     const results = document.getElementById('results');
+    const checkButton = document.getElementById('check');
 
     for (let value = 1; value <= 20; value++) {
-      const label = document.createElement('label');
-      const radio = document.createElement('input');
-      radio.type = 'radio';
-      radio.name = 'number';
-      radio.value = value;
-      radio.checked = value === num;
-      radio.addEventListener('change', () => {
-        num = Number(radio.value);
-        multiplier = 1;
-        results.replaceChildren();
-      });
-      label.append(radio, document.createTextNode(String(value)));
-      numbers.append(label);
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = value;
+      numberSelect.append(option);
     }
 
-    document.getElementById('check').addEventListener('click', () => {
+    numberSelect.addEventListener('change', () => {
+      num = Number(numberSelect.value);
+      multiplier = 1;
+      results.replaceChildren();
+      checkButton.disabled = false;
+    });
+
+    checkButton.addEventListener('click', () => {
       const line = document.createElement('p');
       line.textContent = `${num} x ${multiplier} = ${num * multiplier}`;
       results.append(line);
-      multiplier++;
+      if (multiplier === 10) {
+        checkButton.disabled = true;
+      } else {
+        multiplier++;
+      }
     });
   </script>
 </body>
